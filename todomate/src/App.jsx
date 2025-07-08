@@ -9,11 +9,10 @@ const quotes = [
   "Good code is worth more than good documentation.",
   "Solving difficult problems is an opportunity to test a developer's creativity and perseverance.",
   "Failure is the starting point of learning.",
-  ""
 ];
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
+  const {todos, loading, addTodo, deleteTodo, toggleTodo, updateTodo } = useTodos();
   const [input, setInput] = useState('');
   const [time, setTime] = useState(new Date());
   const inputRef = useRef();
@@ -35,21 +34,19 @@ const App = () => {
   // 추가
   const handleAddTodo = () => {
     if (input.trim() === '') return;
-    setTodos([...todos, { id: Date.now(), text: input, done: false }]);
+    addTodo(input);
     setInput('');
     inputRef.current.focus();
   };
 
   // 삭제
   const handleDelete = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+    deleteTodo(id);
   };
 
   // 완료 토글
   const handleToggle = (id) => {
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, done: !todo.done } : todo
-    ));
+    toggleTodo(id);
   };
 
   // 수정 시작
@@ -61,21 +58,20 @@ const App = () => {
   // 수정 저장
   const handleUpdate = (id) => {
     if (editText.trim() === '') return;
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, text: editText } : todo
-    ));
+    updateTodo(id, editText);
     setEditingId(null);
     setEditText('');
   };
+
+  if (loading) return <div>진행중입니다 . . .</div>;
+
 
   return (
     <div className="app">
       <h1>My TodoList</h1>
 
       <div className="clock">{time.toLocaleTimeString()}</div>
-
       <blockquote className="quote">💬 {quote}</blockquote>
-
       <div className="input-group">
         <input
           ref={inputRef}
