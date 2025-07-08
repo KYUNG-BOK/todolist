@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react';
-import { todoReducer } from './useReducer';
+import { todoReducer } from './useReducer';     // 커스텀 훅.
 
 const API_URL = 'http://localhost:3001/todos';
 

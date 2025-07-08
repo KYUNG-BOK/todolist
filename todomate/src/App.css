@@ -134,12 +134,15 @@ button {
   align-items: center;
 }
 
+/* 완료 표시하기 */
 .todo-list li.done span {
   text-decoration: line-through;
-  color: #9ca3af;
+  color: green;
+  font-style: italic;
 }
 
 .todo-list li span {
   cursor: pointer;
   flex: 1;
 }
+
