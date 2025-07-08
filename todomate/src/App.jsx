@@ -13,7 +13,7 @@ const quotes = [
 ];
 
 const App = () => {
-  const { todos, addTodo, deleteTodo, toggleTodo, updateTodo } = useTodos();
+  const { todos, addTodo, deleteTodo, toggleTodo, updateTodo, reorderTodos } = useTodos();
   const [input, setInput] = useState('');
   const [time, setTime] = useState(new Date());
   const inputRef = useRef();
@@ -21,7 +21,8 @@ const App = () => {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
   const [editingTodo, setEditingTodo] = useState(null);  // 수정 대상 선별하기
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('all');    // 필터링
+  const [draggedIndex, setDraggedIndex] = useState(null); // 드래그 앤 드롭
 
   // 시계 업데이트
   useEffect(() => {
@@ -67,10 +68,23 @@ const App = () => {
 
   // 필터링
   const filteredTodos = todos.filter(todo => {
-  if (filter === 'all') return true;
-  if (filter === 'active') return !todo.done;
-  if (filter === 'completed') return todo.done;
+    if (filter === 'all') return true;
+    if (filter === 'active') return !todo.done;
+    if (filter === 'completed') return todo.done;
   });
+
+  // 자 이제... 드래그앤드롭 갑니다......
+  const handleDrop = async (droppedIndex) => {
+    if (draggedIndex === null || draggedIndex === droppedIndex) return;
+
+    const updated = [...todos];
+    const [moved] = updated.splice(draggedIndex, 1);
+    updated.splice(droppedIndex, 0, moved);
+
+    await reorderTodos(updated); // await로 비동기 처리 권장
+    setDraggedIndex(null);
+  };
+
 
   return (
     <div className="app">
@@ -89,8 +103,15 @@ const App = () => {
       </div>
 
       <ul className="todo-list">
-        {filteredTodos.map(todo => (
-          <li key={todo.id} className={todo.done ? 'done' : ''}>
+        {filteredTodos.map((todo, index) => ( // index 추가로 정의하기
+          <li 
+            key={todo.id} 
+            className={todo.done ? 'done' : ''}
+            draggable
+            onDragStart={() => setDraggedIndex(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => handleDrop(index)}
+          >
             {editingId === todo.id ? (
               <>
                 <input

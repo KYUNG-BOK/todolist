@@ -54,12 +54,28 @@ export const useTodos = () => {
     });
     dispatch({ type: 'UPDATE', payload: { id, text } });
   };
+  
+  // 드래그 앤 드롭 상태 저장하기
+  const reorderTodos = async (newList) => {
+  // 순서만 바꾸는 작업이므로 서버 반영은 생략하거나 아래처럼 구현 가능
+  for (let i = 0; i < newList.length; i++) {
+    await fetch(`${API_URL}/${newList[i].id}`, {
+      method: 'PATCH', // 부분 업데이트
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order: i }) // 순서 필드가 있다면
+    });
+  }
+
+  dispatch({ type: 'REORDER', payload: newList });
+};
+
 
   return {
     todos,
     addTodo,
     deleteTodo,
     toggleTodo,
-    updateTodo
+    updateTodo,
+    reorderTodos
   };
 };

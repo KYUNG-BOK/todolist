@@ -24,7 +24,7 @@ const TodoEditModal = ({ initialText, onConfirm, onCancel }) => {
           rows={4}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="수정할 할 일을 입력하세요."
+          placeholder="수정사항을 입력해주세여~"
         />
 
         <div className={styles.buttonGroup}>

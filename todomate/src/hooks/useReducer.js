@@ -14,6 +14,8 @@ export const todoReducer = (state, action) => {
       return state.map(todo => todo.id === action.payload.id
         ? { ...todo, text: action.payload.text }
         : todo);
+    case 'REORDER':
+      return action.payload;
     default:
       return state;
   }
