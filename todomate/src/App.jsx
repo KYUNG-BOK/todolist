@@ -19,6 +19,7 @@ const App = () => {
   const [quote, setQuote] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
+  const [filter, setFilter] = useState('all');
 
   // 시계 업데이트
   useEffect(() => {
@@ -53,6 +54,13 @@ const App = () => {
     setEditText('');
   };
 
+  // 필터링
+  const filteredTodos = todos.filter(todo => {
+  if (filter === 'all') return true;
+  if (filter === 'active') return !todo.done;
+  if (filter === 'completed') return todo.done;
+  });
+
   return (
     <div className="app">
       <h1>My TodoList</h1>
@@ -70,7 +78,7 @@ const App = () => {
       </div>
 
       <ul className="todo-list">
-        {todos.map(todo => (
+        {filteredTodos.map(todo => (
           <li key={todo.id} className={todo.done ? 'done' : ''}>
             {editingId === todo.id ? (
               <>
@@ -96,6 +104,20 @@ const App = () => {
           </li>
         ))}
       </ul>
+        <div className="filter-buttons">
+          <button onClick={() => setFilter('all')} 
+                  className={filter === 'all' ? 'active' : ''}>
+                    전체
+                  </button>
+          <button onClick={() => setFilter('active')} 
+                  className={filter === 'active' ? 'active' : ''}>
+                    미완료
+                  </button>
+          <button onClick={() => setFilter('completed')} 
+                  className={filter === 'completed' ? 'active' : ''}>
+                    완료
+                  </button>
+      </div>
     </div>
   );
 };
