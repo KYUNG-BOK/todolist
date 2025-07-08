@@ -1,70 +1,65 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useEffect, useReducer } from 'react';
+import { todoReducer } from './useReducer';
 
-const API_URL = 'http://localhost:3001/todos';  // 서버포트 3001
+const API_URL = 'http://localhost:3001/todos';
 
 export const useTodos = () => {
-    const [todos, setTodos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [todos, dispatch] = useReducer(todoReducer, []);
 
-  // 서버에서 todo 리스트 받아오기
-    const fetchTodos = async () => {
-    setLoading(true);
-    try {
-        const res = await axios.get(API_URL);
-        setTodos(res.data);
-        } catch (error) {
-        console.error('데이터를 불러오는데 실패했습니다.', error);
-        } finally {
-        setLoading(false);
-        }
-    };
-
+  // 초기 로딩
     useEffect(() => {
-        fetchTodos();
-    }, []);
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => dispatch({ type: 'INIT', payload: data }));
+  }, []);
 
   // 추가
-    const addTodo = async (text) => {
-        try {
-            const res = await axios.post(API_URL, { text, done: false });
-            setTodos((prev) => [...prev, res.data]);
-            } catch (error) {
-        console.error('추가 실패!', error);
-        }
-    };
+  const addTodo = async (text) => {
+    const newTodo = { text, done: false };
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTodo)
+    });
+    const saved = await res.json();
+    dispatch({ type: 'ADD', payload: saved });
+  };
 
   // 삭제
-    const deleteTodo = async (id) => {
-        try {
-            await axios.delete(`${API_URL}/${id}`);
-            setTodos((prev) => prev.filter(todo => todo.id !== id));
-        } catch (error) {
-        console.error('삭제 실패!', error);
-        }
-    };
+  const deleteTodo = async (id) => {
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    dispatch({ type: 'DELETE', payload: id });
+  };
 
   // 완료 토글
-    const toggleTodo = async (id) => {
-    const todo = todos.find(t => t.id === id);
-    if (!todo) return;
-        try {
-            const res = await axios.patch(`${API_URL}/${id}`, { done: !todo.done });
-            setTodos((prev) => prev.map(t => t.id === id ? res.data : t));
-            } catch (error) {
-            console.error('Failed to toggle todo', error);
-        }
-    };
+  const toggleTodo = async (id) => {
+    const target = todos.find(todo => todo.id === id);
+    const updated = { ...target, done: !target.done };
+    await fetch(`${API_URL}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    });
+    dispatch({ type: 'TOGGLE', payload: id });
+  };
 
   // 수정
-    const updateTodo = async (id, text) => {
-        try {
-        const res = await axios.patch(`${API_URL}/${id}`, { text });
-        setTodos((prev) => prev.map(t => t.id === id ? res.data : t));
-        } catch (error) {
-        console.error('수정 실패', error);
-        }
-    };
+  const updateTodo = async (id, text) => {
+    const target = todos.find(todo => todo.id === id);
+    const updated = { ...target, text };
+    await fetch(`${API_URL}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    });
+    dispatch({ type: 'UPDATE', payload: { id, text } });
+  };
 
-    return { todos, loading, addTodo, deleteTodo, toggleTodo, updateTodo };
+  return {
+    todos,
+    addTodo,
+    deleteTodo,
+    toggleTodo,
+    updateTodo
+  };
 };

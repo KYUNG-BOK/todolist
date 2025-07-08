@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useReducer } from 'react';
-import { useTodos } from './hooks/useTodos';  // custom hook 추가
-import './App.css'; 
-import { todoReducer } from './hooks/useReducer';
+import React, { useState, useEffect, useRef } from 'react';
+import './App.css';
+import { useTodos } from './hooks/useTodos'; // 커스텀 훅 사용
 
 const quotes = [
   "The only way to do great work is to love what you do",
@@ -9,11 +8,11 @@ const quotes = [
   "Start now. There is no perfect time.",
   "Good code is worth more than good documentation.",
   "Solving difficult problems is an opportunity to test a developer's creativity and perseverance.",
-  "Failure is the starting point of learning.",
+  "Failure is the starting point of learning."
 ];
 
 const App = () => {
-  const [todos, dispatch] = useReducer(todoReducer, []);  // reducer에 모든 기능 집어넣음.
+  const { todos, addTodo, deleteTodo, toggleTodo, updateTodo } = useTodos();
   const [input, setInput] = useState('');
   const [time, setTime] = useState(new Date());
   const inputRef = useRef();
@@ -21,13 +20,13 @@ const App = () => {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
-  // 현재 시간 업데이트
+  // 시계 업데이트
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // 처음 로딩 시 명언 띄우기
+  // 명언 초기 설정
   useEffect(() => {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
   }, []);
@@ -37,17 +36,7 @@ const App = () => {
     if (input.trim() === '') return;
     addTodo(input);
     setInput('');
-    inputRef.current.focus();
-  };
-
-  // 삭제
-  const handleDelete = (id) => {
-    deleteTodo(id);
-  };
-
-  // 완료 토글
-  const handleToggle = (id) => {
-    toggleTodo(id);
+    inputRef.current?.focus();
   };
 
   // 수정 시작
@@ -64,15 +53,12 @@ const App = () => {
     setEditText('');
   };
 
-  if (loading) return <div>진행중입니다 . . .</div>;
-
-
   return (
     <div className="app">
       <h1>My TodoList</h1>
-
       <div className="clock">{time.toLocaleTimeString()}</div>
       <blockquote className="quote">💬 {quote}</blockquote>
+
       <div className="input-group">
         <input
           ref={inputRef}
@@ -95,33 +81,15 @@ const App = () => {
                     if (e.key === 'Enter') handleUpdate(todo.id);
                   }}
                 />
-                <button
-                  className="modify_save"
-                  onClick={() => handleUpdate(todo.id)}
-                >
-                  저장
-                </button>
-                <button className="noadd"
-                        onClick={() => setEditingId(null)}>취소</button>
+                <button className="modify_save" onClick={() => handleUpdate(todo.id)}>저장</button>
+                <button className="noadd" onClick={() => setEditingId(null)}>취소</button>
               </>
             ) : (
               <>
-                <span onClick={() => handleToggle(todo.id)}>
-                  {todo.text}
-                </span>
+                <span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
                 <div>
-                  <button
-                    className="modify"
-                    onClick={() => startEdit(todo)}
-                  >
-                    수정
-                  </button>
-                  <button
-                    className="delete"
-                    onClick={() => handleDelete(todo.id)}
-                  >
-                    삭제
-                  </button>
+                  <button className="modify" onClick={() => startEdit(todo)}>수정</button>
+                  <button className="delete" onClick={() => deleteTodo(todo.id)}>삭제</button>
                 </div>
               </>
             )}
