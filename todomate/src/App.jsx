@@ -23,6 +23,7 @@ const App = () => {
   const [editingTodo, setEditingTodo] = useState(null);  // 수정 대상 선별하기
   const [filter, setFilter] = useState('all');    // 필터링
   const [draggedIndex, setDraggedIndex] = useState(null); // 드래그 앤 드롭
+  const [searchText, setSearchText] = useState('');
 
   // 시계 업데이트
   useEffect(() => {
@@ -68,10 +69,16 @@ const App = () => {
 
   // 필터링
   const filteredTodos = todos.filter(todo => {
-    if (filter === 'all') return true;
-    if (filter === 'active') return !todo.done;
-    if (filter === 'completed') return todo.done;
-  });
+    const matchFilter = 
+    filter === 'all' ||
+    (filter === 'active' && !todo.done) ||
+    (filter === 'completed' && todo.done);
+    
+  // 필터링 상태에서 검색
+  const matchSearch = todo.text.toLowerCase().includes(searchText.toLowerCase());
+
+  return matchFilter && matchSearch;
+});
 
   // 자 이제... 드래그앤드롭 갑니다......
   const handleDrop = async (droppedIndex) => {
@@ -161,7 +168,15 @@ const App = () => {
                   className={filter === 'completed' ? 'active' : ''}>
                     완료
                   </button>
+          <input
+              type="text"
+              placeholder="검색"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+          />
+
       </div>
+
 
        {/* 수정 모달 띄우기 */}
       {editingTodo && (
