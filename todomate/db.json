@@ -1,45 +1,28 @@
 {
   "todos": [
     {
-      "id": "6821",
-      "text": "흔들리는 꽃들속에서",
-      "done": false
-    },
-    {
-      "id": "c735",
-      "text": "이렇게 너를. 아쉬워하다 널르",
-      "done": true
-    },
-    {
-      "id": "b8b2",
-      "text": "지나치는 꽃들속에서",
-      "done": true
-    },
-    {
-      "id": "c390",
-      "text": "네 샴푸향만 보이는거야",
-      "done": true
-    },
-    {
-      "id": "3ef5",
-      "text": "스쳐지나간건가",
+      "id": "a14c",
+      "text": "코딩연습",
       "done": false,
+      "order": 1
+    },
+    {
+      "id": "29ad",
+      "text": "?",
+      "done": false,
+      "order": 0
+    },
+    {
+      "id": "f423",
+      "text": "밥 먹기",
+      "done": false,
+      "order": 3
+    },
+    {
+      "id": "e262",
+      "text": "코코 산책하기",
+      "done": true,
       "order": 2
-    },
-    {
-      "id": "3bbb",
-      "text": "1",
-      "done": true
-    },
-    {
-      "id": "384f",
-      "text": "2",
-      "done": false
-    },
-    {
-      "id": "6363",
-      "text": "3",
-      "done": false
     }
   ]
 }

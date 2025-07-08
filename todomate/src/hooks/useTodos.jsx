@@ -6,12 +6,15 @@ const API_URL = 'http://localhost:3001/todos';
 export const useTodos = () => {
     const [todos, dispatch] = useReducer(todoReducer, []);
 
-  // 초기 로딩
-    useEffect(() => {
+    // 초기 , 
+ useEffect(() => {
     fetch(API_URL)
       .then(res => res.json())
-      .then(data => dispatch({ type: 'INIT', payload: data }));
-  }, []);
+      .then(data => {
+        const sorted = data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        dispatch({ type: 'INIT', payload: sorted });
+        });
+    }, []);
 
   // 추가
   const addTodo = async (text) => {
