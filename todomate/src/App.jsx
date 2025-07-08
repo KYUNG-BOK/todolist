@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import { useTodos } from './hooks/useTodos';  // custom hook 추가
 import './App.css'; 
+import { todoReducer } from './hooks/useReducer';
 
 const quotes = [
   "The only way to do great work is to love what you do",
@@ -12,7 +13,7 @@ const quotes = [
 ];
 
 const App = () => {
-  const {todos, loading, addTodo, deleteTodo, toggleTodo, updateTodo } = useTodos();
+  const [todos, dispatch] = useReducer(todoReducer, []);  // reducer에 모든 기능 집어넣음.
   const [input, setInput] = useState('');
   const [time, setTime] = useState(new Date());
   const inputRef = useRef();
