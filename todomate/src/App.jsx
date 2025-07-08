@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTodos } from './hooks/useTodos';  // custom hook 추가
 import './App.css'; 
 
 const quotes = [
