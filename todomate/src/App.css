@@ -1,0 +1,145 @@
+:root {         /*cs 전역변수 사용*/
+  --main-color: #4F46E5; 
+  --gray-light: #f3f4f6;
+  --gray-dark: #6b7280;
+  --text-color: #111827;
+}
+
+body {
+  margin: 0;
+  background-color: #fafafa;
+}
+
+.app {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  background-color: white;
+  font-family: 'Pretendard', 'Segoe UI', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: var(--main-color);
+  margin-bottom: 16px;
+}
+
+.clock {
+  text-align: center;
+  font-size: 1.3rem;
+  color: var(--gray-dark);
+  margin-bottom: 10px;
+}
+
+.quote {
+  font-style: italic;
+  text-align: center;
+  margin: 10px 0 30px;
+  color: var(--gray-dark);
+  font-size: 0.95rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  transition: border 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--main-color);
+}
+
+button {
+  padding: 12px 18px;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.add:hover {
+  background-color: #4338ca;
+}
+
+.modify {
+  margin-right: 6px;
+  background-color: #6b7280;
+  color: white;
+}
+
+.modify:hover {
+  background-color: #4b5563;
+}
+
+.modify_save {
+  background-color: #10b981;
+  margin-left: 6px;
+  margin-right: 6px;
+  color: white;
+}
+
+.modify_save:hover {
+  background-color: #059669;
+}
+
+.delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.delete:hover {
+  background-color: #dc2626;
+}
+
+.noadd {
+  background-color: #080808;
+  color: white;
+}
+
+.noadd:hover {
+  background-color: #595858;
+}
+
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-list li {
+  background: var(--gray-light);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-list li.done span {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.todo-list li span {
+  cursor: pointer;
+  flex: 1;
+}
