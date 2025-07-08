@@ -6,7 +6,7 @@ const API_URL = 'http://localhost:3001/todos';
 export const useTodos = () => {
     const [todos, dispatch] = useReducer(todoReducer, []);
 
-    // 초기 , 
+    // 초기 , 그리고.. ?!
  useEffect(() => {
     fetch(API_URL)
       .then(res => res.json())
