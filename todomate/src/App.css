@@ -10,11 +10,10 @@ body {
   background-color: #fafafa;
 }
 
-
 .app {
   max-width: 600px;
   margin: 60px auto;
-  padding: 30px;
+  padding: 10px;
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   background-color: white;
