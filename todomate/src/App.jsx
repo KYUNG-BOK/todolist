@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { useTodos } from './hooks/useTodos'; // 커스텀 훅 사용
+import TodoEditModal from './component/TodoEditModal';
 
 const quotes = [
   "The only way to do great work is to love what you do",
@@ -19,6 +20,7 @@ const App = () => {
   const [quote, setQuote] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
+  const [editingTodo, setEditingTodo] = useState(null);  // 수정 대상 선별하기
   const [filter, setFilter] = useState('all');
 
   // 시계 업데이트
@@ -47,11 +49,20 @@ const App = () => {
   };
 
   // 수정 저장
-  const handleUpdate = (id) => {
-    if (editText.trim() === '') return;
-    updateTodo(id, editText);
-    setEditingId(null);
-    setEditText('');
+  const handleUpdate = (newText) => {
+    if (!editingTodo) return;
+      updateTodo(editingTodo.id, newText);
+      setEditingTodo(null); // 모달 닫기
+  };
+
+  // 수정버튼 클릭했을때 모달 오픈
+  const handleEditClick = (todo) => {
+    setEditingTodo(todo); // 모달 열기
+  };
+
+  // 모달 내 취소버튼
+  const handleCancelEdit = () => {
+    setEditingTodo(null); // 모달 닫기
   };
 
   // 필터링
@@ -89,15 +100,27 @@ const App = () => {
                     if (e.key === 'Enter') handleUpdate(todo.id);
                   }}
                 />
-                <button className="modify_save" onClick={() => handleUpdate(todo.id)}>저장</button>
-                <button className="noadd" onClick={() => setEditingId(null)}>취소</button>
+                <button className="modify_save" 
+                        onClick={() => handleUpdate(todo.id)}>
+                          저장
+                  </button>
+                <button className="noadd" 
+                        onClick={() => setEditingId(null)}>
+                          취소
+                  </button>
               </>
             ) : (
               <>
                 <span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
                 <div>
-                  <button className="modify" onClick={() => startEdit(todo)}>수정</button>
-                  <button className="delete" onClick={() => deleteTodo(todo.id)}>삭제</button>
+                  <button className="modify" 
+                          onClick={() => handleEditClick(todo)}>
+                            수정
+                    </button>
+                  <button className="delete" 
+                          onClick={() => deleteTodo(todo.id)}>
+                            삭제
+                    </button>
                 </div>
               </>
             )}
@@ -118,6 +141,16 @@ const App = () => {
                     완료
                   </button>
       </div>
+
+       {/* 수정 모달 띄우기 */}
+      {editingTodo && (
+        <TodoEditModal
+          initialText={editingTodo.text}
+          onConfirm={handleUpdate}
+          onCancel={handleCancelEdit}
+        />
+      )}
+
     </div>
   );
 };
