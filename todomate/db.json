@@ -1,34 +1,3 @@
 {
-  "todos": [
-    {
-      "id": "a14c",
-      "text": "코딩연습",
-      "done": false,
-      "order": 4
-    },
-    {
-      "id": "29ad",
-      "text": "?",
-      "done": false,
-      "order": 1
-    },
-    {
-      "id": "f423",
-      "text": "밥 먹기",
-      "done": false,
-      "order": 0
-    },
-    {
-      "id": "e262",
-      "text": "코코 산책하기",
-      "done": true,
-      "order": 2
-    },
-    {
-      "id": "4a19",
-      "text": "음.. 근데 체크하는게 안 이쁨 ㅋㅋㅋ",
-      "done": false,
-      "order": 3
-    }
-  ]
+  "todos": []
 }
