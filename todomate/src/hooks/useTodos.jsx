@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { todoReducer } from './useReducer';     // 커스텀 훅.
 
-const API_URL = 'http://localhost:3001/todos';
+const API_URL = 'https://686e121cc9090c495388257c.mockapi.io/todo/todos';
 
 export const useTodos = () => {
     const [todos, dispatch] = useReducer(todoReducer, []);
