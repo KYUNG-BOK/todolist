@@ -11,13 +11,13 @@ const TodoItem = memo(({
 }) => {
   return (
     <li 
-      className={todo.done ? 'done' : ''}
+      className={todo.is_done ? 'done' : ''}
       draggable
       onDragStart={() => setDraggedIndex(index)}
       onDragOver={(e) => e.preventDefault()}
       onDrop={() => handleDrop(index)}
     >
-      <span onClick={() => toggleTodo(todo.id)}>{todo.text}</span>
+      <span onClick={() => toggleTodo(todo.id)}>{todo.title}</span>
       <div>
         <button className="modify" onClick={() => handleEditClick(todo)}>수정</button>
         <button className="delete" onClick={() => deleteTodo(todo.id)}>삭제</button>

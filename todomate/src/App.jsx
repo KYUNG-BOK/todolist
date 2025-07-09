@@ -45,15 +45,17 @@ const App = () => {
 
   // 필터링
   const filteredTodos = todos.filter(todo => {
-    const matchFilter = 
+  const matchFilter = 
     filter === 'all' ||
-    (filter === 'active' && !todo.done) ||
-    (filter === 'completed' && todo.done);
-    
-  // 필터링 상태에서 검색
-  const matchSearch = todo.text.toLowerCase().includes(searchText.toLowerCase());
-    return matchFilter && matchSearch;
-  });
+    (filter === 'active' && !todo.is_done) ||
+    (filter === 'completed' && todo.is_done);
+
+  // 필드가 있는지 확인 후 소문자 변환, 검색
+  const matchSearch = todo.title && todo.title.toLowerCase().includes(searchText.toLowerCase());
+
+  return matchFilter && matchSearch;
+});
+
 
   // 자 이제... 드래그앤드롭 갑니다......
   const handleDrop = async (droppedIndex) => {
@@ -98,7 +100,7 @@ const App = () => {
        {/* 수정 모달 띄우기 */}
       {editingTodo && (
         <TodoEditModal
-          initialText={editingTodo.text}
+          initialText={editingTodo.title}
           onConfirm={handleUpdate}
           onCancel={handleCancelEdit}
         />

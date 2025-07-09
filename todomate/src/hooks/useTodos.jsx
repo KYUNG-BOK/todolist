@@ -1,77 +1,100 @@
 import { useEffect, useReducer } from 'react';
 import { todoReducer } from './useReducer';     // 커스텀 훅.
-
-const API_URL = 'https://686e121cc9090c495388257c.mockapi.io/todo/todos';
+import { supabase } from '../lib/supabaseClient';
 
 export const useTodos = () => {
-    const [todos, dispatch] = useReducer(todoReducer, []);
+  const [todos, dispatch] = useReducer(todoReducer, []);
 
-    // 초기 , 그리고.. ?!
- useEffect(() => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const sorted = data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-        dispatch({ type: 'INIT', payload: sorted });
-        });
-    }, []);
+  // 초기 데이터 불러오기 (order 기준 정렬)
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const { data, error } = await supabase
+        .from('todos')
+        .select('*')
+        .order('order', { ascending: true });
+
+      if (!error && data) {
+        dispatch({ type: 'INIT', payload: data });
+      } else {
+        console.error('Error fetching todos:', error);
+      }
+    };
+
+    fetchTodos();
+  }, []);
 
   // 추가
-  const addTodo = async (text) => {
-    const newTodo = { text, done: false };
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newTodo)
-    });
-    const saved = await res.json();
-    dispatch({ type: 'ADD', payload: saved });
+  const addTodo = async (title) => {
+    const { data, error } = await supabase
+      .from('todos')
+      .insert([{ title, is_done: false, order: todos.length }]);
+
+    if (!error && data) {
+      dispatch({ type: 'ADD', payload: data[0] });
+    } else {
+      console.error('Error adding todo:', error);
+    }
   };
 
   // 삭제
   const deleteTodo = async (id) => {
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    dispatch({ type: 'DELETE', payload: id });
+    const { error } = await supabase.from('todos').delete().eq('id', id);
+
+    if (!error) {
+      dispatch({ type: 'DELETE', payload: id });
+    } else {
+      console.error('Error deleting todo:', error);
+    }
   };
 
   // 완료 토글
   const toggleTodo = async (id) => {
     const target = todos.find(todo => todo.id === id);
-    const updated = { ...target, done: !target.done };
-    await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated),
-    });
-    dispatch({ type: 'TOGGLE', payload: id });
+    if (!target) return;
+
+    const { error } = await supabase
+      .from('todos')
+      .update({ is_done: !target.is_done })
+      .eq('id', id);
+
+    if (!error) {
+      dispatch({ type: 'TOGGLE', payload: id });
+    } else {
+      console.error('Error toggling todo:', error);
+    }
   };
 
   // 수정
-  const updateTodo = async (id, text) => {
-    const target = todos.find(todo => todo.id === id);
-    const updated = { ...target, text };
-    await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated),
-    });
-    dispatch({ type: 'UPDATE', payload: { id, text } });
+  const updateTodo = async (id, title) => {
+    const { error } = await supabase
+      .from('todos')
+      .update({ title })
+      .eq('id', id);
+
+    if (!error) {
+      dispatch({ type: 'UPDATE', payload: { id, text: title } });
+    } else {
+      console.error('Error updating todo:', error);
+    }
   };
-  
-  // 드래그 앤 드롭 상태 저장하기
+
+  // 드래그 앤 드롭 순서 저장
   const reorderTodos = async (newList) => {
-  // 순서만 바꾸는 작업이므로 서버 반영은 생략하거나 아래처럼 구현 가능
-  for (let i = 0; i < newList.length; i++) {
-    await fetch(`${API_URL}/${newList[i].id}`, {
-      method: 'PATCH', // 부분 업데이트
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ order: i }) // 순서 필드가 있다면
-    });
-  }
+    for (let i = 0; i < newList.length; i++) {
+      const todo = newList[i];
+      const { error } = await supabase
+        .from('todos')
+        .update({ order: i })
+        .eq('id', todo.id);
 
-  dispatch({ type: 'REORDER', payload: newList });
-};
+      if (error) {
+        console.error('Error updating order:', error);
+        return;
+      }
+    }
 
+    dispatch({ type: 'REORDER', payload: newList });
+  };
 
   return {
     todos,
