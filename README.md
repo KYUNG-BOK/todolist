@@ -78,9 +78,6 @@
 
 ![todo](https://github.com/user-attachments/assets/5de35da5-ceee-439d-81af-cabdc153b957)
 
-[pokemon.webm](https://github.com/user-attachments/assets/c1e29061-4067-49b4-8e9d-24b09c4fd18a)
-
-
 ---
 
 ## 🧭 마무리
